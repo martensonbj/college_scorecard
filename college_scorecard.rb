@@ -3,10 +3,23 @@ require 'csv'
 
 class Scorecard
 
-  @path = '/Users/bmartenson/turing/3module/posse_challenges/college_scorecard/college_scorecard.rb'
+  attr_reader :data
 
-  def initialize(ARGV[1], ARGV[2])
-    ARGV[1](ARGV[2])
+  def initialize
+    @data = CSV.foreach('2013_college_scorecards.csv', headers: true)
+    @method = ARGV[0]
+    @arg1 = ARGV[1]
+    @arg2 = ARGV[2]
+  end
+
+  def determine_method
+    if @method == "by_state"
+      by_state(@arg1)
+    elsif @method == "top_average_faculty_salary"
+      top_average_faculty_salary(@arg1)
+    else @method == "median_debt_between"
+      median_debt_between(@arg1, @arg2)
+    end
   end
 
   def by_state(state)
@@ -36,5 +49,9 @@ class Scorecard
     ordered.map! do |k, v|
       puts "#{k} $(#{v})"
     end
+
   end
 end
+
+sc = Scorecard.new
+sc.determine_method
